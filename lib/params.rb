@@ -39,7 +39,7 @@ class Params
       key_level = @params
       until nested_keys.length == 1
         new_nest = nested_keys.shift
-        key_level[new_nest] ||= {} 
+        key_level[new_nest] ||= {}
         key_level = key_level[new_nest]
       end
       key_level[nested_keys.first] = arr[1]

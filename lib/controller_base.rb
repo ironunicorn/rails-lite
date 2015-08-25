@@ -11,7 +11,7 @@ class ControllerBase
 
   # Setup the controller
   def initialize(req, res, route_params = {})
-    @req = req 
+    @req = req
     @res = res
     @params = Params.new(req, route_params)
   end
@@ -36,7 +36,7 @@ class ControllerBase
   end
 
   def protect_from_forgery
-    raise "Error!" unless params[:security] && flash["security"] == params[:security] 
+    raise "Error!" unless params[:security] && flash["security"] == params[:security]
   end
 
   def invoke_action(name)
@@ -65,7 +65,7 @@ class ControllerBase
   # Raise an error if the developer tries to double render.
   def render_content(content, content_type)
     raise if already_built_response?
-    res.body = content 
+    res.body = content
     res.content_type = content_type
     @already_built_response = true
     session.store_session(res)

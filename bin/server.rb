@@ -41,9 +41,9 @@ class CatsController < ControllerBase
   end
 
   def post
-    byebug
+    cat_name = params["cat"]["name"]
     unless params["cat"]["name"] == ""
-      flash["flash now"] = "#{params['cat']['name']} created!"
+      flash["flash now"] = "#{cat_name} created!"
       $cats << {id: $cats.last[:id] + 1, name: params["cat"]["name"] }
       redirect_to("http://localhost:3000/cats")
     else
