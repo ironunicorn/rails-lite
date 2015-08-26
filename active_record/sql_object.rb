@@ -8,14 +8,18 @@ class SQLObject
   extend Associatable
 
   def self.columns
-    names = DBConnection.execute2(<<-SQL)
-      SELECT
-        #{table_name}.*
-      FROM
-        #{table_name}
-    SQL
+    unless @columns
+      names = DBConnection.execute2(<<-SQL)
+        SELECT
+          #{table_name}.*
+        FROM
+          #{table_name}
+      SQL
 
-    names.first.map { |name| name.to_sym }
+      @columns = names.first.map { |name| name.to_sym }
+    end
+
+    @columns
   end
 
   def self.finalize!
@@ -44,7 +48,7 @@ class SQLObject
       FROM
         #{table_name}
     SQL
-
+    puts 'called'
     parse_all(results)
   end
 
@@ -58,6 +62,7 @@ class SQLObject
   end
 
   def self.find(id)
+    id = id.to_i
     result = DBConnection.execute(<<-SQL, id)
       SELECT
         #{table_name}.*
@@ -89,10 +94,15 @@ class SQLObject
     @attributes.values
   end
 
+  def set(params = {})
+    params.each { |key, value| attributes[key] = value }
+  end
+
   def insert
+    columns = "#{attributes.keys.join(', ')}"
     DBConnection.execute(<<-SQL, *attribute_values)
       INSERT INTO
-        #{self.class.table_name} (#{self.class.columns.drop(1).join(', ')})
+        #{self.class.table_name} (#{columns})
       VALUES
         (#{(['?'] * attribute_values.length).join(', ')})
     SQL
@@ -101,11 +111,12 @@ class SQLObject
   end
 
   def update
+    columns = "#{attributes.keys.drop(1).join(' = ?, ')} = ?"
     DBConnection.execute(<<-SQL, *(attribute_values.rotate))
       UPDATE
         #{self.class.table_name}
       SET
-        #{self.class.columns.drop(1).join(' = ?, ')} = ?
+        #{columns}
       WHERE
         id = ?
     SQL
@@ -113,5 +124,14 @@ class SQLObject
 
   def save
     id.nil? ? insert : update
+  end
+
+  def destroy
+    DBConnection.execute(<<-SQL, self.id)
+      DELETE FROM
+        #{self.class.table_name}
+      WHERE
+        id = ?
+    SQL
   end
 end

@@ -10,8 +10,14 @@ class Route
 
   # checks if pattern matches path and method matches request method
   def matches?(req)
-    req.request_method.downcase.to_sym == http_method && 
-      req.path =~ pattern
+    if Params.new(req)["_method"]
+      puts req.path
+      Params.new(req)["_method"].downcase.to_sym == http_method &&
+        req.path =~ pattern
+    else
+      req.request_method.downcase.to_sym == http_method &&
+        req.path =~ pattern
+    end
   end
 
   # use pattern to pull out route params (save for later?)

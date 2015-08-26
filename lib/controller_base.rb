@@ -40,7 +40,8 @@ class ControllerBase
   end
 
   def invoke_action(name)
-    protect_from_forgery if name == :post
+    protect_from_forgery if name == :create || name == :update || name == :destroy
+
     self.send(name)
   end
 

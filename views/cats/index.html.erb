@@ -1,7 +1,12 @@
 <h1>ALL THE CATS</h1>
+<ul>
 <% @cats.each do |cat| %>
-	<pre><%= cat.to_s%></pre>
+	<li>
+		<a href="/cats/<%= cat.id %>"><%= cat.name %></a>
+		<%= cat.owner_id %>
+	</li>
 <% end %>
+</ul>
 <a href="/cats/new">New cat!</a>
 <pre><%= flash["flash now"] if flash["flash now"] %></pre>
 <pre><%= flash["flash next"] if flash["flash next"] %></pre>
