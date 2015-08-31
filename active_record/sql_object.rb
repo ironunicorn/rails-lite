@@ -23,6 +23,7 @@ class SQLObject
   end
 
   def self.finalize!
+    puts self
     self.columns.each do |column|
       define_method(column.to_s) { attributes[column] }
 
@@ -38,6 +39,7 @@ class SQLObject
 
   def self.table_name
     @table_name ||= self.inspect.tableize
+    @table_name = "humans" if @table_name == "humen"
     instance_variable_get("@table_name")
   end
 

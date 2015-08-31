@@ -23,6 +23,7 @@ class Session
   # add to the responses session
   def store_session(res)
     new_cookie = WEBrick::Cookie.new('_rails_lite_app', @session.to_json)
+    new_cookie.path = "/"
     res.cookies << new_cookie
   end
 end

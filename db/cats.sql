@@ -1,43 +1,32 @@
+DROP TABLE IF EXISTS houses;
+DROP TABLE IF EXISTS humans;
+DROP TABLE IF EXISTS cats;
+DROP TABLE IF EXISTS attributes;
+DROP TABLE IF EXISTS attributings;
+
 CREATE TABLE cats (
   id INTEGER PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
-  owner_id INTEGER,
+  human_id INTEGER,
 
-  FOREIGN KEY(owner_id) REFERENCES human(id)
+  FOREIGN KEY(human_id) REFERENCES humans(id)
 );
 
 CREATE TABLE humans (
   id INTEGER PRIMARY KEY,
-  fname VARCHAR(255) NOT NULL,
-  lname VARCHAR(255) NOT NULL,
-  house_id INTEGER,
-
-  FOREIGN KEY(house_id) REFERENCES human(id)
+  name VARCHAR(255) NOT NULL,
+  session_token VARCHAR(255)
 );
 
-CREATE TABLE houses (
-  id INTEGER PRIMARY KEY,
-  address VARCHAR(255) NOT NULL
-);
 
 INSERT INTO
-  houses (id, address)
+  cats (name, human_id)
 VALUES
-  (1, "26th and Guerrero"), (2, "Dolores and Market");
+  ("Little", 1),
+  ("Finley", 1),
+  ("Hobbes", 1);
 
 INSERT INTO
-  humans (id, fname, lname, house_id)
+  humans (name)
 VALUES
-  (1, "Devon", "Watts", 1),
-  (2, "Matt", "Rubens", 1),
-  (3, "Ned", "Ruggeri", 2),
-  (4, "Catless", "Human", NULL);
-
-INSERT INTO
-  cats (id, name, owner_id)
-VALUES
-  (1, "Breakfast", 1),
-  (2, "Earl", 2),
-  (3, "Haskell", 3),
-  (4, "Markov", 3),
-  (5, "Stray Cat", NULL);
+  ("Irene");

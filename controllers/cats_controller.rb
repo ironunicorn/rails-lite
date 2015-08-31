@@ -1,5 +1,4 @@
 require_relative '../models/cat'
-require 'byebug'
 
 class CatsController < ControllerBase
   def index

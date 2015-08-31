@@ -1,9 +1,11 @@
-<%= @cat.id %>
-<%= @cat.name %>
-<%= @cat.owner_id %>
-<a href="/cats/<%= @cat.id %>/edit">Edit</a>
+<h1>SHOWING <%= @cat.name %></h1>
+<br>
+<a href="/cats/<%= @cat.id %>/edit">EDIT <%= @cat.name %></a>
+<br>
 <form action="/cats/<%= @cat.id %>" method="post">
   <input type="hidden" name="_method" value="delete">
   <input type="hidden" name="security" value="<%= form_authenticity_token %>">
   <input type="submit" value="Wake up <%= @cat.name %> (destroy action)">
 </form>
+<br>
+<a href="/cats">Back to INDEX</a>

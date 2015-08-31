@@ -1,12 +1,12 @@
-<h1>ALL THE CATS</h1>
+<h1>INDEX all the Cats!</h1>
 <ul>
 <% @cats.each do |cat| %>
 	<li>
-		<a href="/cats/<%= cat.id %>"><%= cat.name %></a>
-		<%= cat.owner_id %>
+		<a href="/cats/<%= cat.id %>">SHOW <%= cat.name %></a>
 	</li>
 <% end %>
 </ul>
-<a href="/cats/new">New cat!</a>
+	<a href="/cats/new">New cat!</a>
+
 <pre><%= flash["flash now"] if flash["flash now"] %></pre>
 <pre><%= flash["flash next"] if flash["flash next"] %></pre>

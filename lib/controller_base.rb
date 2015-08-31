@@ -76,4 +76,10 @@ class ControllerBase
   def session
     @session ||= Session.new(req)
   end
+
+  def current_user
+    @current_user ||= Human.where({
+      session_token: session[:session_token]
+    }).first
+  end
 end

@@ -1,12 +1,14 @@
 <pre><%= flash["flash now"] if flash["flash now"] %></pre>
 <pre><%= flash["flash next"] if flash["flash next"] %></pre>
 
+<h1>EDIT <%= @cat.name %></h1>
+
 <form action="/cats/<%= @cat.id %>" method="post">
   <input type="hidden" name="_method" value="put">
   <input type="hidden" name="security" value="<%= form_authenticity_token %>">
-  <label>Name
+  <label>Change cat's a name:
     <input type="text" name="cat[name]" value="<%= @cat.name %>">
   </label>
-
-  <input type="submit">
+  <br>
+  <input type="submit" value="UPDATE <%= @cat.name %>">
 </form>

@@ -1,12 +1,12 @@
 <pre><%= flash["flash now"] if flash["flash now"] %></pre>
 <pre><%= flash["flash next"] if flash["flash next"] %></pre>
-<h1>NEW cat</h1>
+<h1>NEW account</h1>
 
-<form action="/cats" method="POST">
+<form action="/humans" method="POST">
   <input type="hidden" name="security" value="<%= form_authenticity_token %>">
-  <label>Give your cat a name:
-    <input type="text" name="cat[name]">
+  <label>Enter your name:
+    <input type="text" name="human[name]">
   </label>
   <br>
-  <input type="submit" value="CREATE cat">
+  <input type="submit" value="CREATE account">
 </form>
