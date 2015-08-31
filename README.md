@@ -6,4 +6,4 @@ version hosted on AWS ec2 ubuntu instance.
 
 [See it in action][live]
 
-[live]: restful-cats.com/cats
+[live]: http://restful-cats.com/cats
