@@ -98,7 +98,6 @@ module Associatable
           #{through_options.table_name}.#{through_options.foreign_key} = ?
       SQL
       source_options.model_class.parse_all(results)
-      debugger
     end
   end
 end

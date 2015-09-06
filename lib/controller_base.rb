@@ -28,7 +28,7 @@ class ControllerBase
   end
 
   def auth_token
-    @auth_token = AuthToken.new(flash)
+    @auth_token ||= AuthToken.new(flash)
   end
 
   def form_authenticity_token
@@ -45,7 +45,6 @@ class ControllerBase
     self.send(name)
   end
 
-  # Set the response status code and header
   def redirect_to(url)
     raise if already_built_response?
     res.status = 302
@@ -61,9 +60,7 @@ class ControllerBase
     render_content(content, "text/html")
   end
 
-  # Populate the response with content.
-  # Set the response's content type to the given type.
-  # Raise an error if the developer tries to double render.
+
   def render_content(content, content_type)
     raise if already_built_response?
     res.body = content
@@ -79,7 +76,7 @@ class ControllerBase
 
   def current_user
     @current_user ||= Human.where({
-      session_token: session[:session_token]
+      session_token: session["session_token"]
     }).first
   end
 end

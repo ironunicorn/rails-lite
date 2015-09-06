@@ -1,3 +1,90 @@
-<h1>Hi</h1>
+<h1>Welcome to My Rails-Inspired Server and ORM!</h1>
+<a href='/cats'>Skip the explanation and go play with some cats >></a>
 
-<a href='/cats'>Head to cat INDEX</a>
+<% if current_user %>
+	<form action="/session" method="post">
+		<input type="hidden" name="_method" value="delete">
+		<input type="hidden" name="security" value="<%= form_authenticity_token %>">
+		<input type="submit" value="logout (DESTROY session)">
+	</form>
+<% else %>
+	<p>
+		<a href="/session/new">Sign In</a> or
+		<a href="/humans/new">Sign Up</a>
+	</p>
+<% end %>
+
+<h2>Why?</h2>
+
+<p>
+  When I first started building websites, Rails seemed like magic to me.
+  The models, views, and controllers integrate with the database and server so
+  smoothly that I barely even noticed they were there. Even more awe-inspiring
+  was Heroku. It enabled me to put my app on the internet in a place accessible
+  to anyone with the link by just typing two lines in my terminal.
+</p>
+
+<p>
+  Of course, having a live website that ran on Rails and Heroku was pretty
+  exciting. Also, I think one of the most important aspects of being a good
+  developer is finding and working with libraries and tools that abstract
+  needed functionality - it's essential not to reinvent wheels unnecessarily.
+</p>
+
+<p>
+  But honestly, who can resist attempting a little magic of their own? I had
+  to try and make it myself. So here it is along with directions for anyone else
+  who wants to feel like a witch or wizard for at least a little while.
+</p>
+
+<p>
+  This first page discusses how to launch a homemade server on an Amazon EC2
+  instance. Subsequent pages share the respective code that support the typical
+  actions of a simple RESTful server and ORM.
+</p>
+
+<h2>How is this running?</h2>
+
+<h3>An Overview</h3>
+<p>
+  This is website is running on an Amazon Elastic Compute Cloud
+  (<a href="https://aws.amazon.com/ec2/">EC2</a>) micro instance. Basically,
+  it's a little Ubuntu computer hosted somewhere within Amazon's vast network
+  that I can remotely connect with, load files (like a server) and execute
+  commands. This server can be configured to listen to the EC2's public IP
+  address for requests which can, in turn, be directed from a domain name.
+</p>
+
+<h3>The Details</h3>
+<h4>Setting up</h4>
+<p>
+  Just go through
+  <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html"
+  >this tutorial</a>. I know it's long, but it's necessary. Two things: 1. Be
+  sure and save your key pair! 2. When you create your VPC and security group,
+  choose Northern California. This ensures that you have the default and don't
+  have to deal with configuring anything crazy later on.
+</p>
+<p>
+  By the end of this tutorial you should have a file that ends with key-pair.pem
+  and a security group that has an approved ssh corresponding with your current
+  IP address.
+</p>
+<h4>Launching your instance</h4>
+<p>
+  Go to
+</p>
+<h4>Configuring your server</h4>
+<p>
+  The most important thing here is that you set your port to 80.
+</p>
+<h4>Configuring your Instance</h4>
+<p>
+  Load Ruby!
+  Make a Gemfile
+</p>
+<h4>Loading your server onto your Instance</h4>
+<p>
+  SCP and Bundle Install!
+</p>
+<h4></h4>

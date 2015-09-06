@@ -29,7 +29,7 @@ router.draw do
   delete Regexp.new("^/session"), SessionsController, :destroy
 end
 
-server = WEBrick::HTTPServer.new(Port: 80)
+server = WEBrick::HTTPServer.new(Port: 3000)
 server.mount_proc('/') do |req, res|
   route = router.run(req, res)
 end

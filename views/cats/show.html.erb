@@ -1,5 +1,6 @@
 <h1>SHOWING <%= @cat.name %></h1>
 <br>
+<% if current_user && current_user.id == @cat.human_id %>
 <a href="/cats/<%= @cat.id %>/edit">EDIT <%= @cat.name %></a>
 <br>
 <form action="/cats/<%= @cat.id %>" method="post">
@@ -8,4 +9,18 @@
   <input type="submit" value="Wake up <%= @cat.name %> (destroy action)">
 </form>
 <br>
+<% end %>
 <a href="/cats">Back to INDEX</a>
+<br>
+<% if current_user %>
+	<form action="/session" method="post">
+		<input type="hidden" name="_method" value="delete">
+		<input type="hidden" name="security" value="<%= form_authenticity_token %>">
+		<input type="submit" value="logout (DESTROY session)">
+	</form>
+<% else %>
+	<p>
+		<a href="/session/new">Sign In</a> or
+		<a href="/humans/new">Sign Up</a>
+	</p>
+<% end %>

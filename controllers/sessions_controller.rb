@@ -24,7 +24,8 @@ class SessionsController < ControllerBase
   def destroy
     current_user.set({session_token: SecureRandom.urlsafe_base64})
     current_user.save
-    current_user = null
-    session[:session_token] = null
+    current_user = nil
+    session["session_token"] = nil
+    redirect_to("/cats")
   end
 end

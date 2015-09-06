@@ -50,7 +50,6 @@ class SQLObject
       FROM
         #{table_name}
     SQL
-    puts 'called'
     parse_all(results)
   end
 
