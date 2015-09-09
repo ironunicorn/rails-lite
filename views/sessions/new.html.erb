@@ -1,12 +1,208 @@
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,400italic|Abril+Fatface|Nixie+One' rel='stylesheet' type='text/css'>
+<div class="title">
 <pre><%= flash["flash now"] if flash["flash now"] %></pre>
 <pre><%= flash["flash next"] if flash["flash next"] %></pre>
 <h1>Log in</h1>
-
 <form action="/session" method="POST">
   <input type="hidden" name="security" value="<%= form_authenticity_token %>">
   <label>Enter your name:
-    <input type="text" name="human[name]">
+    <input type="text" class="form" name="human[name]">
   </label>
   <br>
-  <input type="submit" value="Sign In">
+  <input type="submit" class="new" value="Sign In">
 </form>
+</div>
+
+<style>
+
+  html, body {
+    padding: 0px;
+    margin: 0px;
+  }
+
+  h1, h2, h3 {
+    line-height: 1;
+    margin: 10px;
+    font-family: Abril Fatface, sans-serif;
+  }
+
+  p, a {
+    line-height: 1;
+    margin: 10px;
+    font-family: 'Alegreya', serif;
+  }
+	pre {
+		font-size: 1.3em;
+	}
+  label {
+    font-family: 'Alegreya', serif;
+    padding: 10px;
+    font-size: 1.3em;
+    color: #683C0B;
+    margin: 20px 0px;
+  }
+  input.form {
+    font-size: 0.7em;
+    padding: 3px 5px;
+    border-radius: 5px;
+    width: 250px;
+  }
+
+  input.new {
+    margin: 20px 500px;
+    background-color: #C38E4A;
+    font-size: 1.4em;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    text-align: right;
+  }
+  input.new:hover {
+    box-shadow: 1px 1px 1px black;
+    background-color: #683C0B;
+  }
+  button {
+    background-color: #C38E4A;
+    font-size: 1.8em;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+		margin: 20px;
+  }
+  button:hover {
+    box-shadow: 1px 1px 1px black;
+    background-color: #683C0B;
+  }
+
+  .title {
+		border: 3px solid #683C0B;
+		padding: 20px;
+		border-radius: 10px;
+		max-width: 700px;
+		margin: 70px auto;
+    box-sizing: border-box;
+    height: 70vh;
+		overflow-y: scroll;
+    background: url('http://res.cloudinary.com/disran0g3/image/upload/v1441559945/cat12_defeop.png') no-repeat bottom right;
+  }
+
+	.title h1 {
+		font-size: 3em;
+		color: #7B0515;
+    line-height: 1.5;
+	}
+
+	.title li {
+		font-size: 1.5em;
+		line-height: 1.5;
+	}
+
+	.title ul {
+		list-style-type: none;
+	}
+
+	.title a {
+		text-decoration: none;
+		color: #683C0B;
+	}
+
+	.title a:visited {
+		text-decoration: none;
+		color: #C38E4A;
+	}
+	.title a:hover {
+		color: #851C21;
+	}
+
+  .navigation {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    z-index: 3;
+    background: rgba(104,60,11, 0.5);
+    height: 50px;
+  }
+	.logo {
+		font-family: Abril Fatface, sans-serif;
+		font-size: 2em;
+		padding: 10px 40px;
+		float: left;
+		color: #7B0515;
+		cursor: pointer;
+	}
+	.navigation button {
+		margin: -9px -15px;
+		font-size: 0.8em;
+	}
+
+	.navigation ul {
+		float: right;
+	}
+	.navigation li {
+		float: left;
+		list-style-type: none;
+		font-size: 1.3em;
+		padding: 0px 10px;
+	}
+	.navigation a {
+		color: #683C0B;
+	}
+	.navigation a:hover {
+		color: white;
+	}
+
+  .logout {
+    font-size: 0.8em;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 8px 10px;
+    cursor: pointer;
+    margin: -8px 0px;
+    background-color: #C38E4A;
+  }
+  .logout:hover {
+    background-color: #683C0B;
+    box-shadow: 1px 1px 1px black;
+    /*margin: 6px;*/
+  }
+  .explanation {
+    max-width: 700px;
+    margin: 50px auto;
+		padding: 0 10px 10px 10px;
+  }
+  .explanation h2 {
+    color: #851C21;
+    font-size: 2em;
+    line-height 2;
+    margin: 75px 0px 50px 0px;
+  }
+
+	.explanation h3 {
+		color: #C38E4A;
+    font-size: 1.5em;
+    line-height 2;
+    margin: 50px 0px 25px 0px;
+	}
+  .explanation p {
+    line-height: 1.5;
+    font-size: 1.3em;
+    color: #683C0B;
+    margin: 20px 0px;
+  }
+
+  .explanation button {
+    margin: 50px 10px;
+    font-size: 1.3em;
+    float: right;
+    background-color: #C38E4A;
+  }
+  .explanation button:hover {
+    background-color: #683C0B;
+  }
+</style>

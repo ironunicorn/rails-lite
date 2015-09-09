@@ -15,6 +15,7 @@ require_relative '../active_record/db_connection'
 router = Router.new
 router.draw do
   get Regexp.new("^/?$"), RootController, :root
+  get Regexp.new("^/go_live/?$"), RootController, :go_live
   get Regexp.new("^/cats/?$"), CatsController, :index
   get Regexp.new("^/cats/new/?$"), CatsController, :new
   get Regexp.new("^/cats/(?<id>\\d+)/edit/?$"), CatsController, :edit
@@ -29,7 +30,7 @@ router.draw do
   delete Regexp.new("^/session"), SessionsController, :destroy
 end
 
-server = WEBrick::HTTPServer.new(Port: 3000)
+server = WEBrick::HTTPServer.new(Port: 80)
 server.mount_proc('/') do |req, res|
   route = router.run(req, res)
 end

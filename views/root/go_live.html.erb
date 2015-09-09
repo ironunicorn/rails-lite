@@ -1,0 +1,410 @@
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,400italic|Abril+Fatface|Nixie+One' rel='stylesheet' type='text/css'>
+<div class="navigation">
+	<a href="/"><div class="logo">
+		RESTful Cats
+	</div></a>
+		<ul>
+			<a href="/cats"><li>Index</li></a>
+			<a href='/go_live'><li>Launch an App</li></a>
+
+	<% if current_user %>
+		<li><form action="/session" method="post">
+			<input type="hidden" name="_method" value="delete">
+			<input type="hidden" name="security" value="<%= form_authenticity_token %>">
+			<input type="submit" class="logout" value="Logout (DESTROY session)">
+		</form></li>
+	<% else %>
+			<li><a href="/session/new"><button class="logout">Sign In (NEW session)</button></a></li>
+			<li><a href="/humans/new"><button class="logout">Sign Up (NEW user)</button></a></li>
+	<% end %>
+		</ul>
+</div>
+
+<div class="explanation">
+<h2>Launching your Web App</h2>
+<p>
+This tutorial will show you how to run your website on an Amazon Elastic Compute Cloud (EC2) micro instance. Basically, it's a little computer hosted somewhere within Amazon's network that you can remotely connect with, load files (like a web app), and execute commands (like running the web app's server). A domain name can be configured to point to the EC2's public IP address and voila! Your homemade web app is live.
+</p>
+
+<h2>The Details</h2>
+<h3>Setting up</h3>
+<p>
+  First, go through this tutorial. I know it's long, but it's necessary. Two things:
+</p>
+  <ol>
+    <li>Be sure and save your key pair!</li>
+    <li>When you create your VPC and security group, choose Northern California. This ensures that you have the default and don't have to deal with configuring anything crazy later on.</li>
+  </ol>
+<p>
+Also, don't forget to change your .pem file to read only run permissions by running this command in terminal:
+</p>
+
+
+<pre>
+  $ chmod 400 your_user_name-key-pair.pem
+</pre>
+<p>
+
+By the end of this tutorial you should have a file that ends with key-pair.pem and a security group that has an ssh allowance for your current IP address.
+</p>
+<h3>Launching your instance</h3>
+<p>
+Go to your EC2 account.  Select the "Launch Instance" button and choose this one:
+</p>
+<pre>
+Ubuntu Server 14.04 LTS (HVM), SSD Volume Type - ami-df6a8b9b
+</pre>
+<p>
+On the next page, select the <strong>t2 micro instance</strong>. It's free! Now click the "Review and Launch" button.
+</p>
+<p>
+Find the link to "edit security groups" and choose the one you made in the setting up phase. Awesome! Now you can hit the "Launch" button.  This may take a few minutes.  If you'd like, head to "configuring your web app" and do that while you wait.
+</p>
+
+
+<h3>Making an Elastic IP Address</h3>
+<p>
+Go to your EC2 Running Instances. Select the one you just made and look at the information below.  There is currently a dash near your Elastic IP. It's actually a link so click on it.
+It will take you to a page with a button to "allocate address". Click it and confirm that it's allocated to the EC2 instance you just navigated from. That's it!
+</p>
+
+<h3>Configuring your Instance</h3>
+<p>
+All right! It's time to connect to your shiny new instance! Run the following command in terminal:
+</p>
+<pre>
+$ ssh -i /path/my-key-pair.pem ubuntu@public_dns_name_of_your_instance
+</pre>
+<p>
+The first time you connect, you'll see something like this:
+</p>
+<pre>
+The authenticity of host 'ec2-198-51-100-1.compute-1.amazonaws.com
+(10.254.142.33)'can't be established. RSA key fingerprint is
+1f:51:ae:28:bf:89:e9:d8:1f:25:5d:37:2d:7d:b8:ca:9f:f5:f1:6f.
+Are you sure you want to continue connecting (yes/no)?
+</pre>
+<p>
+This is okay. So type yes.
+</p>
+
+<p>
+Now you're in your new instance! Great work! Install Ruby and SQLite3:
+</p>
+<pre>
+$ sudo apt-get update
+$ sudo apt-get install ruby
+$ sudo apt-get install sqlite3
+$ sudo apt-get install ruby-dev
+$ sudo apt-get install libsqlite3-dev
+$ sudo gem install bundler
+</pre>
+
+<h3>Configuring your Web App</h3>
+<p>
+First, ensure that your web app runs the way you want it to on localhost:3000.  Just run your server and double check that everything works the way you want it to.
+</p>
+<p>
+It's all working? Great! Now, the most important thing here is that you set your port to 80. In your server.rb file, you should have the following:
+</p>
+<pre>
+server = WEBrick::HTTPServer.new(Port: 80)
+</pre>
+
+<p>
+Also, make a Gemfile with these contents:
+</p>
+
+<pre>
+source 'https://rubygems.org'
+
+gem 'sqlite3'
+gem 'activesupport'
+gem 'webrick'
+</pre>
+
+
+<h3>Loading your Web App onto your Instance</h3>
+<p>
+Now it's time to load your web app onto your instance using secure copy (SCP). It's not necessary to know what SCP is, but there's the link just in case. From your own computer's terminal, run the following command:
+</p>
+
+<pre>
+$ scp -i my-key-pair.pem -r your-rails-lite-directory ubuntu@public_dns_name_of_your_instance:~/
+</pre>
+<p>
+Yay! Your stuff is up! Now connect back to your instance in from your terminal.  As a reminder:
+</p>
+<pre>
+$ ssh -i /path/my-key-pair.pem ubuntu@public_dns_name_of_your_instance
+</pre>
+<p>
+And run bundle install from your rails lite directory.
+</p>
+<p>
+There's a few dependencies here so if anything doesn't install, look at the error message and try running again with the --fix-missing command.
+If all else fails, try updating ruby to a newer version.
+</p>
+
+
+<h3>Running your server and keeping it up after you end your connection</h3>
+<p>
+First, try and run your server:
+</p>
+<pre>
+$ sudo ruby path/to/your/server
+</pre>
+<p>
+Go to your elastic IP address in your browser and see if your website is up. If it is live, congratulations!!
+</p>
+<p>
+If it's not, you might have to go ahead and reset your database:
+</p>
+<pre>
+$ rm path/to/your/db.db
+$ cat path/to/your/sql.sql | sqlite3 path/to/your/db.db
+</pre>
+<p>
+At this point, as long as you keep your connection running, your app will be live, but this isn't really practical.  At some point your connection will time out or you'll disconnect from the internet when you pack up your computer to got home. The (hacky/lazy) solution? Screen! I linked to the documentation because I don't think I can adequately describe how cool it is. It involves words like "multiplexer" It should probably be on goodreads- I can't recommend it enough. Shutdown your server (ctrl + c) before proceeding.
+</p>
+<p>
+To use screen in your ubuntu instance, simply type:
+</p>
+<pre>
+$ screen
+</pre>
+
+<p>
+Read as much of the welcome text as you want and then hit enter.
+</p>
+<p>
+Now that you're in screen, simply run the command to start your server again:
+</p>
+<pre>
+$ sudo ruby path/to/your/server
+</pre>
+
+<p>
+And then detach from screen without shutting it down:
+</p>
+<pre>
+ctrl + a with d
+</pre>
+<p>
+(you need to hold down ctrl and a first and then press d while holding the first two keys)
+</p>
+<p>
+Cool! Your server will now run forever if you let it.  If you ever want to re-attach to your screen, no worries! Just type
+</p>
+<pre>
+$ screen -r
+</pre>
+
+
+<p>
+and you'll be back at the place where your server is running.  So it's easy to remember: "d" is for detach, "r" is for re-attach.
+</p>
+
+<h3>Pointing your domain name to your instance</h3>
+<p>
+Yay! You're pretty much there. The icing on the cake is pointing your very own domain name to your instance's public IP address.  This should be as simple as creating an Alias record set with your domain name service that points to your public IP address.
+</p>
+
+<p>
+And now you're really finished! Bathe in the glory of your live site. Maybe do a happy dance.  I know I did.
+</p>
+
+<h3>Common Problems and Solutions</h3>
+<p>
+"My server is running, but I no longer have access to it to kill it. Now it's hogging my port and I can't run anything else on it.”
+</p>
+<p>
+First, find the id of the process:
+</p>
+<pre>
+$ sudo netstat -ap | grep :[port_number]
+</pre>
+<p>
+then try to kill it by that id:
+</p>
+<pre>
+$ kill [pid]
+</pre>
+<p>
+this probably won't work, but it's best practice to try before pulling the ultimate kill:
+</p>
+<pre>
+$ kill -9 [pid]
+</pre>
+<p>
+The process should be stopped now. Yay!
+</p>
+</div>
+
+<style>
+
+  html, body {
+    padding: 0px;
+    margin: 0px;
+  }
+
+  h1, h2, h3 {
+    line-height: 1;
+    margin: 10px;
+    font-family: Abril Fatface, sans-serif;
+  }
+
+  p, a {
+    line-height: 1;
+    margin: 10px;
+    font-family: 'Alegreya', serif;
+  }
+	pre {
+		font-size: 1.3em;
+	}
+	.new {
+		float: right;
+	}
+  button {
+    background-color: #C38E4A;
+    font-size: 1.8em;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+		margin: 20px;
+  }
+  button:hover {
+    box-shadow: 1px 1px 1px black;
+    background-color: #683C0B;
+  }
+
+  .title {
+		border: 3px solid #683C0B;
+		padding: 20px;
+		border-radius: 10px;
+		max-width: 700px;
+		margin: 70px auto;
+    box-sizing: border-box;
+    height: 70vh;
+		overflow-y: scroll;
+    background: url('http://res.cloudinary.com/disran0g3/image/upload/v1441559946/cat1_enanwl.png') no-repeat bottom right;
+  }
+
+	.title h1 {
+		font-size: 3em;
+		color: #7B0515;
+	}
+
+	.title li {
+		font-size: 1.5em;
+		line-height: 1.5;
+	}
+
+	.title ul {
+		list-style-type: none;
+	}
+
+	.title a {
+		text-decoration: none;
+		color: #683C0B;
+	}
+
+	.title a:visited {
+		text-decoration: none;
+		color: #C38E4A;
+	}
+	.title a:hover {
+		color: #851C21;
+	}
+
+	.navigation {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    z-index: 3;
+    background: rgba(104,60,11, 0.5);
+    height: 50px;
+  }
+	.logo {
+		font-family: Abril Fatface, sans-serif;
+		font-size: 2em;
+		padding: 10px 40px;
+		float: left;
+		color: #7B0515;
+		cursor: pointer;
+	}
+	.navigation button {
+		margin: -4px -15px;
+		font-size: 0.8em;
+	}
+
+	.navigation ul {
+		float: right;
+		margin-top: -9px;
+	}
+	.navigation li {
+		float: left;
+		list-style-type: none;
+		font-size: 1.3em;
+		padding: 0px 10px;
+	}
+	.navigation a {
+		color: #683C0B;
+	}
+	.navigation a:hover {
+		color: white;
+	}
+
+  .logout {
+    font-size: 0.8em;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 8px 10px;
+    cursor: pointer;
+    margin: -8px 0px;
+    background-color: #C38E4A;
+  }
+  .logout:hover {
+    background-color: #683C0B;
+    box-shadow: 1px 1px 1px black;
+    /*margin: 6px;*/
+  }
+  .explanation {
+    max-width: 700px;
+    margin: 50px auto;
+		padding: 0 10px 10px 10px;
+  }
+  .explanation h2 {
+    color: #851C21;
+    font-size: 2em;
+    line-height 2;
+    margin: 75px 0px 50px 0px;
+  }
+
+	.explanation h3 {
+		color: #C38E4A;
+    font-size: 1.5em;
+    line-height 2;
+    margin: 50px 0px 25px 0px;
+	}
+  .explanation p, li {
+    line-height: 1.5;
+    font-size: 1.3em;
+    color: #683C0B;
+    margin: 20px 0px;
+  }
+
+  .explanation button {
+    margin: 50px 10px;
+    font-size: 1.3em;
+    float: right;
+    background-color: #C38E4A;
+  }
+  .explanation button:hover {
+    background-color: #683C0B;
+  }
+</style>

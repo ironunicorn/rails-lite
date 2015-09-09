@@ -1,90 +1,195 @@
-<h1>Welcome to My Rails-Inspired Server and ORM!</h1>
-<a href='/cats'>Skip the explanation and go play with some cats >></a>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,400italic|Abril+Fatface|Nixie+One' rel='stylesheet' type='text/css'>
 
-<% if current_user %>
-	<form action="/session" method="post">
-		<input type="hidden" name="_method" value="delete">
-		<input type="hidden" name="security" value="<%= form_authenticity_token %>">
-		<input type="submit" value="logout (DESTROY session)">
-	</form>
-<% else %>
-	<p>
-		<a href="/session/new">Sign In</a> or
-		<a href="/humans/new">Sign Up</a>
-	</p>
-<% end %>
+<div class="navigation">
+	<a href="/"><div class="logo">
+		RESTful Cats
+	</div></a>
+		<ul>
+			<a href="/cats"><li>Index</li></a>
+			<a href='/go_live'><li>Launch an App</li></a>
 
-<h2>Why?</h2>
+	<% if current_user %>
+		<li><form action="/session" method="post">
+			<input type="hidden" name="_method" value="delete">
+			<input type="hidden" name="security" value="<%= form_authenticity_token %>">
+			<input type="submit" class="logout" value="Logout (DESTROY session)">
+		</form></li>
+	<% else %>
+			<li><a href="/session/new"><button class="logout">Sign In (NEW session)</button></a></li>
+			<li><a href="/humans/new"><button class="logout">Sign Up (NEW user)</button></a></li>
+	<% end %>
+		</ul>
+</div>
 
-<p>
-  When I first started building websites, Rails seemed like magic to me.
-  The models, views, and controllers integrate with the database and server so
-  smoothly that I barely even noticed they were there. Even more awe-inspiring
-  was Heroku. It enabled me to put my app on the internet in a place accessible
-  to anyone with the link by just typing two lines in my terminal.
-</p>
+<div class="title">
+  <h1>Welcome to RESTful Cats</h1>
+  <h2>A Rails-Inspired Web App from Scratch</h2>
+</div>
 
-<p>
-  Of course, having a live website that ran on Rails and Heroku was pretty
-  exciting. Also, I think one of the most important aspects of being a good
-  developer is finding and working with libraries and tools that abstract
-  needed functionality - it's essential not to reinvent wheels unnecessarily.
-</p>
+<div class="explanation">
+  <h2>What's this all about?</h2>
+  <p>
+    When I first started building websites (not that long ago) Rails seemed like magic to me.
+    Models, views, and controllers integrated with my database and server so
+    smoothly that I barely even noticed they were there. Even more awe-inspiring
+    was Heroku. After just two lines and a bunch of text running through my terminal,
+    my app was live- there on the internet for anyone to access. Amazing!
+  </p>
+  <p>
+    Of course, having a live website that ran on Rails and Heroku was pretty
+    exciting itself. I think one of the most important aspects of being a good
+    developer is finding and working with libraries and tools that abstract
+    needed and previously developed functionality - it's essential not to
+    reinvent wheels unnecessarily.
+  </p>
+  <p>
+    But honestly, who can resist attempting a little magic? I had
+    to try and make it myself. So this is my live, rails-inspired app with the bare
+    essentials. I've paired it with the code and explanations for anyone else
+    who wants to do a little conjuring of their own!
+  </p>
+  <a href='/go_live'><button>A Way to Launch (without Heroku)</button></a>
+  <a href='/cats'><button>Explore the Rails Inspired Code</button></a>
 
-<p>
-  But honestly, who can resist attempting a little magic of their own? I had
-  to try and make it myself. So here it is along with directions for anyone else
-  who wants to feel like a witch or wizard for at least a little while.
-</p>
+</div>
 
-<p>
-  This first page discusses how to launch a homemade server on an Amazon EC2
-  instance. Subsequent pages share the respective code that support the typical
-  actions of a simple RESTful server and ORM.
-</p>
+<style>
 
-<h2>How is this running?</h2>
+  html, body {
+    padding: 0px;
+    margin: 0px;
+  }
 
-<h3>An Overview</h3>
-<p>
-  This is website is running on an Amazon Elastic Compute Cloud
-  (<a href="https://aws.amazon.com/ec2/">EC2</a>) micro instance. Basically,
-  it's a little Ubuntu computer hosted somewhere within Amazon's vast network
-  that I can remotely connect with, load files (like a server) and execute
-  commands. This server can be configured to listen to the EC2's public IP
-  address for requests which can, in turn, be directed from a domain name.
-</p>
+  h1, h2, h3 {
+    color: white;
+    line-height: 1;
+    margin: 10px;
+    font-family: Abril Fatface, sans-serif;
+  }
 
-<h3>The Details</h3>
-<h4>Setting up</h4>
-<p>
-  Just go through
-  <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html"
-  >this tutorial</a>. I know it's long, but it's necessary. Two things: 1. Be
-  sure and save your key pair! 2. When you create your VPC and security group,
-  choose Northern California. This ensures that you have the default and don't
-  have to deal with configuring anything crazy later on.
-</p>
-<p>
-  By the end of this tutorial you should have a file that ends with key-pair.pem
-  and a security group that has an approved ssh corresponding with your current
-  IP address.
-</p>
-<h4>Launching your instance</h4>
-<p>
-  Go to
-</p>
-<h4>Configuring your server</h4>
-<p>
-  The most important thing here is that you set your port to 80.
-</p>
-<h4>Configuring your Instance</h4>
-<p>
-  Load Ruby!
-  Make a Gemfile
-</p>
-<h4>Loading your server onto your Instance</h4>
-<p>
-  SCP and Bundle Install!
-</p>
-<h4></h4>
+  p, a {
+    color: white;
+    line-height: 1;
+    margin: 10px;
+    font-family: 'Alegreya', serif;
+  }
+  button {
+    background-color: #C38E4A;
+    font-size: 1.8em;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    margin: 20px;
+  }
+  button:hover {
+    box-shadow: 1px 1px 1px black;
+    background-color: #683C0B;
+  }
+
+  .title {
+    font-size: 2em;
+    text-align: center;
+    text-shadow: 1px 1px 1px black;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    padding-bottom: 5vh;
+    box-sizing: border-box;
+    height: 80vh;
+    background: url('http://res.cloudinary.com/disran0g3/image/upload/v1441559946/littlethecat_vvvsea.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
+
+  .navigation {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    z-index: 3;
+    background: rgba(104,60,11, 0.5);
+    height: 50px;
+  }
+  .logo {
+    font-family: Abril Fatface, sans-serif;
+    font-size: 2em;
+    padding: 10px 40px;
+    float: left;
+    color: #7B0515;
+    cursor: pointer;
+  }
+  .navigation button {
+    margin: -10px -15px;
+    font-size: 0.8em;
+  }
+
+  .navigation ul {
+    float: right;
+  }
+  .navigation li {
+    float: left;
+    list-style-type: none;
+    font-size: 1.3em;
+    padding: 0px 10px;
+  }
+  .navigation a {
+    color: #683C0B;
+  }
+  .navigation a:hover {
+    color: white;
+  }
+
+  .logout {
+    font-size: 0.8em;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 8px 10px;
+    cursor: pointer;
+    margin: -8px 0px;
+    background-color: #C38E4A;
+  }
+  .logout:hover {
+    background-color: #683C0B;
+    box-shadow: 1px 1px 1px black;
+    /*margin: 6px;*/
+  }
+  .explanation {
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 0 10px 10px 10px;
+  }
+  .explanation h2 {
+    color: #851C21;
+    font-size: 2em;
+    line-height 2;
+    margin: 75px 0px 50px 0px;
+  }
+
+  .explanation h3 {
+    color: #C38E4A;
+    font-size: 1.5em;
+    line-height 2;
+    margin: 50px 0px 25px 0px;
+  }
+  .explanation p {
+    line-height: 1.5;
+    font-size: 1.3em;
+    color: #683C0B;
+    margin: 20px 0px;
+  }
+
+  .explanation button {
+    margin: 50px 10px;
+    font-size: 1.3em;
+    float: right;
+    background-color: #C38E4A;
+  }
+  .explanation button:hover {
+    background-color: #683C0B;
+  }
+</style>

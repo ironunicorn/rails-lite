@@ -1,0 +1,103 @@
+
+  html, body {
+    padding: 0px;
+    margin: 0px;
+  }
+
+  h1, h2, h3 {
+    color: white;
+    line-height: 1;
+    margin: 10px;
+    font-family: Abril Fatface, sans-serif;
+  }
+
+  p, a {
+    color: white;
+    line-height: 1;
+    margin: 10px;
+    font-family: 'Alegreya', serif;
+  }
+  button {
+    background-color: #851C21;
+    font-size: 1em;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    margin: 30px;
+  }
+  button:hover {
+    box-shadow: 1px 1px 1px black;
+    background-color: #7B0515;
+  }
+
+  .title {
+    font-size: 2em;
+    text-align: center;
+    text-shadow: 1px 1px 1px black;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    padding-bottom: 5vh;
+    box-sizing: border-box;
+    height: 80vh;
+    background: url('http://res.cloudinary.com/disran0g3/image/upload/v1441559946/littlethecat_vvvsea.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
+
+  .navigation {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    z-index: 3;
+    background: rgba(104,60,11, 0.5);
+    height: 50px;
+  }
+
+  .logout {
+    font-size: 0.8em;
+    float: right;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    margin: 7px;
+    background-color: #C38E4A;
+  }
+  .logout:hover {
+    background-color: #683C0B;
+    box-shadow: 1px 1px 1px black;
+    margin: 6px;
+  }
+  .explanation {
+    max-width: 700px;
+    margin: 50px auto;
+  }
+  .explanation h2 {
+    color: #851C21;
+    font-size: 2em;
+    line-height 2;
+    margin: 75px 0px 50px 0px;
+  }
+  .explanation p {
+    line-height: 1.5;
+    font-size: 1.3em;
+    color: #683C0B;
+    margin: 20px 0px;
+  }
+
+  .explanation button {
+    margin: 50px 10px;
+    font-size: 1.3em;
+    float: right;
+    background-color: #C38E4A;
+  }
+  .explanation button:hover {
+    background-color: #683C0B;
+  }

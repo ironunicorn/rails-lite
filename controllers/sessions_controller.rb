@@ -3,14 +3,16 @@ require 'securerandom'
 
 class SessionsController < ControllerBase
   def new
+    return redirect_to "/cats" if current_user
     @human = Human.new
     render "new"
   end
 
   def create
+    return redirect_to "/cats" if current_user
     @human = Human.where(params["human"]).first
     if @human
-      flash["flash now"] = "Welcome #{@human.name}!"
+      flash["flash now"] = "Welcome #{@human.name}! Check below for an explanation."
       @human.set({session_token: SecureRandom.urlsafe_base64})
       @human.save
       session[:session_token] = @human.session_token

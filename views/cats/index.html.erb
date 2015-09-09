@@ -1,26 +1,588 @@
-<h1>INDEX all the Cats!</h1>
-<pre><%= flash["flash now"] if flash["flash now"] %></pre>
-<pre><%= flash["flash next"] if flash["flash next"] %></pre>
-<% if current_user %>
-	<a href="/cats/new">NEW cat!</a>
-<% end %>
-<ul>
-<% @cats.each do |cat| %>
-	<li>
-		<a href="/cats/<%= cat.id %>">SHOW <%= cat.name %></a>
-	</li>
-<% end %>
-</ul>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,400italic|Abril+Fatface|Nixie+One' rel='stylesheet' type='text/css'>
+<div class="title">
+	<h1>INDEX the Cats</h1>
+	<pre><%= flash["flash now"] if flash["flash now"] %></pre>
+	<pre><%= flash["flash next"] if flash["flash next"] %></pre>
+	<% if current_user %>
+		<a href="/cats/new"><button class="new">NEW cat</button></a>
+	<% else %>
+		<a href="/humans/new"><button class="new">Sign up to create, update, and wake up cats</button></a>
+	<% end %>
+	<ul>
+	<% @cats.each do |cat| %>
+		<li>
+			<a href="/cats/<%= cat.id %>">SHOW <%= cat.name %></a>
+		</li>
+	<% end %>
+	</ul>
+</div>
+<div class="navigation">
+	<a href="/"><div class="logo">
+		RESTful Cats
+	</div></a>
+		<ul>
+			<a href="/cats"><li>Index</li></a>
+			<a href='/go_live'><li>Launch an App</li></a>
 
-<% if current_user %>
-	<form action="/session" method="post">
-		<input type="hidden" name="_method" value="delete">
-		<input type="hidden" name="security" value="<%= form_authenticity_token %>">
-		<input type="submit" value="logout (DESTROY session)">
-	</form>
-<% else %>
+	<% if current_user %>
+		<li><form action="/session" method="post">
+			<input type="hidden" name="_method" value="delete">
+			<input type="hidden" name="security" value="<%= form_authenticity_token %>">
+			<input type="submit" class="logout" value="Logout (DESTROY session)">
+		</form></li>
+	<% else %>
+			<li><a href="/session/new"><button class="logout">Sign In (NEW session)</button></a></li>
+			<li><a href="/humans/new"><button class="logout">Sign Up (NEW user)</button></a></li>
+	<% end %>
+		</ul>
+</div>
+
+<div class="explanation">
+	<h2>Code and Explanations</h2>
+	<% if flash["flash now"] && flash["flash now"].include?("Welcome") %>
+	<h3>Signing in or up</h3>
 	<p>
-		<a href="/session/new">Sign In</a> or
-		<a href="/humans/new">Sign Up</a>
+		Cool! It looks like you just signed up or in. This is was done
+		through a "create" method in either the sessions or humans controller.
+		The neat thing about both is that they take advantage of a rails-like Session class.
 	</p>
-<% end %>
+	<pre>
+class Session
+  def initialize(req)
+    session = req.cookies.find { |cookie| cookie.name == '_rails_lite_app' }
+    @session = session ? JSON.parse(session.value) : {}
+  end
+
+  def [](key)
+    @session[key]
+  end
+
+  def []=(key, val)
+    @session[key] = val
+  end
+
+  def store_session(res)
+    new_cookie = WEBrick::Cookie.new('_rails_lite_app', @session.to_json)
+    new_cookie.path = "/"
+    res.cookies << new_cookie
+  end
+end
+	</pre>
+	<p>
+		The WEBrick::Cookie allows me to store and access a session token in the client
+		that corresponds to a session_token that's stored in my humans table. I ensured that
+		the cookie's path is '/' so that way I can look up the cookie no matter which page I'm on.
+		After that, it's just a matter of adding the cookie to the WEBrick response and it'll be
+		there on the next page that's rendered.
+	</p>
+	<p>
+		As you can see below, the store_session method is called with every redirect_to
+		and render method call. There is also a handy current_user method added directly
+		to the base that can check the session for a session_token whenever it's called.
+	</p>
+	<pre>
+class ControllerBase
+  def redirect_to(url)
+    raise if already_built_response?
+    res.status = 302
+    res["Location"] = url
+    @already_built_response = true
+    session.store_session(res)
+    flash.store_flash(res)
+  end
+
+  def render(template_name)
+    f = File.read("views/#{self.class.to_s.underscore.chomp("_controller")}/#{template_name}.html.erb")
+    content = ERB.new(f).result(binding)
+    render_content(content, "text/html")
+  end
+
+
+  def render_content(content, content_type)
+    raise if already_built_response?
+    res.body = content
+    res.content_type = content_type
+    @already_built_response = true
+    session.store_session(res)
+    flash.store_flash(res)
+  end
+
+  def session
+    @session ||= Session.new(req)
+  end
+
+  def current_user
+    @current_user ||= Human.where({
+      session_token: session["session_token"]
+    }).first
+  end
+end
+	</pre>
+<p>
+	Yay! Now you can create, update, and wake up (destroy) RESTful cats. To start,
+	try selecting the new cat button from the INDEX box above.
+</p>
+	<% elsif flash["flash now"] && flash["flash now"].include?("woke up") %>
+	<h3>Deleting a cat</h3>
+	<p>
+		It looks like you just woke a cat up. This is was done
+		through a "destroy" method in the cats controller.
+	</p>
+	<p>
+		To get there "RESTfully", a hidden "_method" input was given the value "delete".
+		Processing this from the routes was simply a matter of checking whether the "_method"
+		input was in the params and matching against that instead of the http method:
+	</p>
+	<pre>
+class Route
+  def matches?(req)
+    params = Params.new(req)
+    if params["_method"]
+      params["_method"].downcase.to_sym == http_method &&
+        req.path =~ pattern
+    else
+      req.request_method.downcase.to_sym == http_method &&
+        req.path =~ pattern
+    end
+  end
+end
+	</pre>
+	<p>
+		Once this happened, the cats controller sent a destroy request to its corresponding
+		model. Its SQLObject base executed the command like so:
+	</p>
+	<pre>
+def destroy
+  DBConnection.execute(<<-SQL, self.id)
+    DELETE FROM
+      #{self.class.table_name}
+    WHERE
+      id = ?
+  SQL
+end
+	</pre>
+	<p>
+		And that's how your cat woke up.
+	</p>
+	<% else %>
+	<% unless current_user %>
+		<p>
+			First, apologies for requesting that you create an account. This is only to
+			ensure that everyone has control over the cats they create and that if they ever
+			come back, they won't be sad because someone else woke up a cat they made. The only
+			thing you have to do is enter a username. No password or anything else required!
+		</p>
+		<% end %>
+		<p>
+			This is most likely the first page you accessed after the homepage so it seems
+			like the best place to describe the router and server that was set up beforehand. After, the
+			index method you see above will be explained.
+		</p>
+		<h3>The Router</h3>
+			<p>
+				Before this webserver started, routes needed to be drawn so that
+				the webserver would know what to do with client requests. Thus, a new
+				Router was inititialized with an empty route array:
+			</p>
+<pre>
+class Router
+  attr_reader :routes
+
+  def initialize
+    @routes = []
+  end
+end
+</pre>
+<pre>
+router = Router.new
+</pre>
+			<p>
+				This route array was then filled with routes using a draw method to associate
+				RESTful requests and paths with controller classes and methods.
+			</p>
+<pre>
+class Router
+  def add_route(pattern, method, controller_class, action_name)
+    @routes << Route.new(pattern, method, controller_class, action_name)
+  end
+
+  def draw(&proc)
+    self.instance_eval(&proc)
+  end
+
+  [:get, :post, :put, :delete].each do |http_method|
+    define_method(http_method) do |pattern, controller_class, action_name|
+      add_route(pattern, http_method, controller_class, action_name)
+    end
+  end
+end
+</pre>
+			<pre>
+router.draw do
+  get Regexp.new("^/cats/?$"), CatsController, :index
+  get Regexp.new("^/cats/(?<id>\\d+)/?"), CatsController, :show
+  post Regexp.new("^/cats$"), CatsController, :create
+  put Regexp.new("^/cats/(?<id>\\d+)"), CatsController, :update
+  delete Regexp.new("^/cats/(?<id>\\d+)"), CatsController, :destroy
+end
+			</pre>
+			<p>
+				In this case, a :get method was defined that will take a
+				regular expression (Regexp.new("^/cats/?$")), associate it with the
+				http method it was named after (get), and then save the method (index)
+				and class (CatsController) that it should call in the event this http method
+				is requested on the regular expression path specified.
+			</p>
+			<p>
+				At this point, if you're thinking, "Wait! What about this Route class?
+				What is it doing to these routes?" Kudos to you for catching this!
+				Don't worry- we'll get to these in the index section of the explanation.
+			</p>
+		<h3>The Server</h3>
+	<p>
+		Now that the routes are defined, the server can be created with a specified
+		port to listen on and then fed a proc to read every time
+		it receives a request from that port. I used the WEBrick library to help
+		with this part.
+	</p>
+			<pre>
+server = WEBrick::HTTPServer.new(Port: 80)
+server.mount_proc('/') do |req, res|
+  route = router.run(req, res)
+end
+			</pre>
+			<p>
+				The router's run method simply searches through its list of routes to
+				see if any match the request. If it can't find anything, it'll return a
+				404 message.
+			</p>
+			<pre>
+class Router
+  def run(req, res)
+    route = match(req)
+    return res.status = 404 unless route
+    route.run(req, res)
+  end
+
+  def match(req)
+    @routes.find { |route| route.matches?(req) }
+  end
+end
+			</pre>
+			<p>
+				The last thing to set up is a way to stop the server. The "trap('INT')"
+				line is what allows us to use CTRL + C to shut it down. Now that everything's in place,
+				the server is started:
+			</p>
+			<pre>
+trap('INT') { server.shutdown }
+server.start
+			</pre>
+	<h3>Indexing the Cats</h3>
+	<p>
+		Okay! Now that we've laid the foundation, we can get to the good stuff- how all these
+		cats were indexed. Remember that Route class from the Router? This is where it comes in.
+		First, your browser made a get request to my server with the path	"/cats". Earlier, the
+		server was programmed to use the router's run method with WEBrick's request and response
+		as arguments. The router goes ahead and uses it's matches? method to run through its
+		route array and find a match. This in turn calls the route's matches? method for
+		individual analysis:
+	</p>
+	<pre>
+class Route
+  attr_reader :pattern, :http_method, :controller_class, :action_name
+
+  def initialize(pattern, http_method, controller_class, action_name)
+    @pattern = pattern
+    @http_method = http_method
+    @controller_class = controller_class
+    @action_name = action_name
+  end
+
+  def matches?(req)
+    params = Params.new(req)
+    if params["_method"]
+      params["_method"].downcase.to_sym == http_method &&
+        req.path =~ pattern
+    else
+      req.request_method.downcase.to_sym == http_method &&
+        req.path =~ pattern
+    end
+  end
+end
+	</pre>
+	<p>
+		The first match returned will call its own run method:
+	</p>
+
+	<pre>
+class Route
+  def run(req, res)
+    route_params = {}
+    match_values = req.path.match(pattern)
+    if match_values
+      match_values.names.each do |key|
+        route_params[key] = match_values[key]
+      end
+    end
+    control = controller_class.new(req, res, route_params)
+    control.invoke_action(action_name)
+  end
+end
+	</pre>
+	<p>
+		Using the instance variables set from the router's draw method, the route
+		creates a new instance of the specified controller class and calls the specific
+		action (or method) that was set. And just like that, we've made it to the
+		CatsController index method!
+	</p>
+	<h3>Into the CatsController</h3>
+	<pre>
+class CatsController < ControllerBase
+  def index
+    @cats = Cat.all
+    render "index"
+  end
+end
+	</pre>
+	<p>
+		Cool! It's only two lines. On a high level, the first line grabs all the cats
+		currently stored in my database and the second line uses this to render an
+		html.erb file entitled "index".
+	</p>
+	<p>
+		Let's explore this in more detail. The first line is actually calling a model
+		class, Cat:
+	</p>
+	<pre>
+class Cat < SQLObject
+  self.finalize!
+end
+	</pre>
+	<p>
+		And that's pretty much all there is to this class. There's no "all" method
+		here so let's table the self.finalize! method (check out the details
+		<a href='https://github.com/ironunicorn/rails-lite/blob/master/active_record/sql_object.rb'>here</a>
+		if you'd like) and look up a level at the SQLObject parent class to see what's going on.
+	</p>
+<pre>
+class SQLObject
+  def self.all
+    results = DBConnection.execute(<<-SQL)
+      SELECT
+        #{table_name}.*
+      FROM
+        #{table_name}
+      SQL
+
+      parse_all(results)
+    end
+  end
+end
+</pre>
+<p>
+	I'm going to abstract a little bit here. Check out my <a href='https://github.com/ironunicorn/rails-lite/blob/master/active_record/db_connection.rb'>db_connection.rb</a> file
+	on Github if you'd like to see more detail. The DBConnection.execute line
+	uses the SQLite3 gem to open my specified database and run SQL argument. From here,
+	the SQLObject class acts as my ActiveRecord, translating methods into queries and then
+	returning objects as results.
+</p>
+<p>
+	In this case, there's a setting in my DBConnection that can return my results as
+	a hash. These results are then fed into a parse_all method:
+</p>
+
+<pre>
+class SQLObject
+  def self.parse_all(results)
+    answer = []
+    results.each do |result|
+      answer << self.new(result)
+    end
+
+    answer
+  end
+end
+</pre>
+<p>
+	The method takes each result and turns it into an instance of itself and then
+	returns an array of all of these objects to use in the next line of my index method:
+	render 'index'.
+</p>
+<p>
+	As with the Cat model, the CatsController inherits from another, more universal class-
+	the ControllerBase.
+</p>
+<p>
+	This seems like a good break point for now, but please check back later for more details. In the meantime,
+	feel free to check out the <a href="https://github.com/ironunicorn/rails-lite">raw code</a> on Github.
+</p>
+	<% end %>
+
+</div>
+
+
+<style>
+
+  html, body {
+    padding: 0px;
+    margin: 0px;
+  }
+
+  h1, h2, h3 {
+    line-height: 1;
+    margin: 10px;
+    font-family: Abril Fatface, sans-serif;
+  }
+
+  p, a {
+    line-height: 1;
+    margin: 10px;
+    font-family: 'Alegreya', serif;
+  }
+	pre {
+		font-size: 1.3em;
+	}
+
+  button {
+    background-color: #C38E4A;
+    font-size: 1.8em;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+		margin: 20px;
+  }
+  button:hover {
+    box-shadow: 1px 1px 1px black;
+    background-color: #683C0B;
+  }
+
+  .title {
+		border: 3px solid #683C0B;
+		padding: 20px;
+		border-radius: 10px;
+		max-width: 700px;
+		margin: 70px auto;
+    box-sizing: border-box;
+    height: 70vh;
+		overflow-y: scroll;
+    background: url('http://res.cloudinary.com/disran0g3/image/upload/v1441559946/cat1_enanwl.png') no-repeat bottom right;
+  }
+
+	.title h1 {
+		font-size: 3em;
+		color: #7B0515;
+	}
+
+	.title li {
+		font-size: 1.5em;
+		line-height: 1.5;
+	}
+
+	.title ul {
+		list-style-type: none;
+	}
+
+	.title a {
+		text-decoration: none;
+		color: #683C0B;
+	}
+
+	.title a:visited {
+		text-decoration: none;
+		color: #C38E4A;
+	}
+	.title a:hover {
+		color: #851C21;
+	}
+
+  .navigation {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    z-index: 3;
+    background: rgba(104,60,11, 0.5);
+    height: 50px;
+  }
+	.logo {
+		font-family: Abril Fatface, sans-serif;
+		font-size: 2em;
+		padding: 10px 40px;
+		float: left;
+		color: #7B0515;
+		cursor: pointer;
+	}
+	.navigation button {
+		margin: -9px -15px;
+		font-size: 0.8em;
+	}
+
+	.navigation ul {
+		float: right;
+	}
+	.navigation li {
+		float: left;
+		list-style-type: none;
+		font-size: 1.3em;
+		padding: 0px 10px;
+	}
+	.navigation a {
+		color: #683C0B;
+	}
+	.navigation a:hover {
+		color: white;
+	}
+
+  .logout {
+    font-size: 0.8em;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 8px 10px;
+    cursor: pointer;
+    margin: -8px 0px;
+    background-color: #C38E4A;
+  }
+  .logout:hover {
+    background-color: #683C0B;
+    box-shadow: 1px 1px 1px black;
+    /*margin: 6px;*/
+  }
+  .explanation {
+    max-width: 700px;
+    margin: 50px auto;
+		padding: 0 10px 10px 10px;
+  }
+  .explanation h2 {
+    color: #851C21;
+    font-size: 2em;
+    line-height 2;
+    margin: 75px 0px 50px 0px;
+  }
+
+	.explanation h3 {
+		color: #C38E4A;
+    font-size: 1.5em;
+    line-height 2;
+    margin: 50px 0px 25px 0px;
+	}
+  .explanation p {
+    line-height: 1.5;
+    font-size: 1.3em;
+    color: #683C0B;
+    margin: 20px 0px;
+  }
+
+  .explanation button {
+    margin: 50px 10px;
+    font-size: 1.3em;
+    float: right;
+    background-color: #C38E4A;
+  }
+  .explanation button:hover {
+    background-color: #683C0B;
+  }
+</style>

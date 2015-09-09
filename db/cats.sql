@@ -22,11 +22,11 @@ CREATE TABLE humans (
 INSERT INTO
   cats (name, human_id)
 VALUES
-  ("Little", 1),
-  ("Finley", 1),
+  ("Little", null),
+  ("Finley", null),
   ("Hobbes", 1);
 
 INSERT INTO
   humans (name)
 VALUES
-  ("Irene");
+  ("IronUnicorn");
