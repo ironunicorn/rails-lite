@@ -15,6 +15,6 @@ explanations of the running code.
 This is currently a work in progress so not all explanations have been written yet.
 There's also more features I want to implement to exhibit other standard rails features:
 
--[ ] controller's before_action method
--[ ] has_many and belongs_to methods of ActiveRecord.
--[ ] validates presence and uniqueness
+- [ ] controller's before_action method
+- [ ] has_many and belongs_to methods of ActiveRecord.
+- [ ] validates presence and uniqueness

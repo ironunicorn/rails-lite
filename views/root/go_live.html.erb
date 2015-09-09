@@ -23,13 +23,13 @@
 <div class="explanation">
 <h2>Launching your Web App</h2>
 <p>
-This tutorial will show you how to run your website on an Amazon Elastic Compute Cloud (EC2) micro instance. Basically, it's a little computer hosted somewhere within Amazon's network that you can remotely connect with, load files (like a web app), and execute commands (like running the web app's server). A domain name can be configured to point to the EC2's public IP address and voila! Your homemade web app is live.
+This tutorial will show you how to run your website on an Amazon Elastic Compute Cloud (<a href="https://aws.amazon.com/ec2/">EC2</a>) micro instance. Basically, it's a little computer hosted somewhere within Amazon's network that you can remotely connect with, load files (like a web app), and execute commands (like running the web app's server). A domain name can be configured to point to the EC2's public IP address and voila! Your homemade web app is live.
 </p>
 
 <h2>The Details</h2>
 <h3>Setting up</h3>
 <p>
-  First, go through this tutorial. I know it's long, but it's necessary. Two things:
+  First, go through this <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html">tutorial</a>. I know it's long, but it's necessary. Two things:
 </p>
   <ol>
     <li>Be sure and save your key pair!</li>
@@ -49,7 +49,7 @@ By the end of this tutorial you should have a file that ends with key-pair.pem a
 </p>
 <h3>Launching your instance</h3>
 <p>
-Go to your EC2 account.  Select the "Launch Instance" button and choose this one:
+Go to your <a href="https://us-west-1.console.aws.amazon.com/ec2">EC2 account</a>.  Select the "Launch Instance" button and choose this one:
 </p>
 <pre>
 Ubuntu Server 14.04 LTS (HVM), SSD Volume Type - ami-df6a8b9b
@@ -126,7 +126,7 @@ gem 'webrick'
 
 <h3>Loading your Web App onto your Instance</h3>
 <p>
-Now it's time to load your web app onto your instance using secure copy (SCP). It's not necessary to know what SCP is, but there's the link just in case. From your own computer's terminal, run the following command:
+Now it's time to load your web app onto your instance using secure copy (<a href="https://en.wikipedia.org/wiki/Secure_copy">SCP</a>). It's not necessary to know what SCP is, but there's the link just in case. From your own computer's terminal, run the following command:
 </p>
 
 <pre>
@@ -165,7 +165,7 @@ $ rm path/to/your/db.db
 $ cat path/to/your/sql.sql | sqlite3 path/to/your/db.db
 </pre>
 <p>
-At this point, as long as you keep your connection running, your app will be live, but this isn't really practical.  At some point your connection will time out or you'll disconnect from the internet when you pack up your computer to got home. The (hacky/lazy) solution? Screen! I linked to the documentation because I don't think I can adequately describe how cool it is. It involves words like "multiplexer" It should probably be on goodreads- I can't recommend it enough. Shutdown your server (ctrl + c) before proceeding.
+At this point, as long as you keep your connection running, your app will be live, but this isn't really practical.  At some point your connection will time out or you'll disconnect from the internet when you pack up your computer to got home. The (hacky/lazy) solution? <a href="https://help.ubuntu.com/community/Screen">Screen</a>! I linked to the documentation because I don't think I can adequately describe how cool it is. It involves words like "multiplexer" It should probably be on goodreads- I can't recommend it enough. Shutdown your server (ctrl + c) before proceeding.
 </p>
 <p>
 To use screen in your ubuntu instance, simply type:
