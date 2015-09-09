@@ -16,5 +16,5 @@ This is currently a work in progress so not all explanations have been written y
 There's also more features I want to implement to exhibit other standard rails features:
 
 - [ ] controller's before_action method
-- [ ] has_many and belongs_to methods of ActiveRecord.
-- [ ] validates presence and uniqueness
+- [ ] exhibit has_many and belongs_to in the live version.
+- [ ] validates presence and uniqueness.
