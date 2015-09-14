@@ -31,8 +31,8 @@
 			<input type="submit" class="logout" value="Logout (DESTROY session)">
 		</form></li>
 	<% else %>
-			<li><a href="/session/new"><button class="logout">Sign In (NEW session)</button></a></li>
-			<li><a href="/humans/new"><button class="logout">Sign Up (NEW user)</button></a></li>
+			<a href="/session/new"><li>Sign In (NEW session)</li></a>
+			<a href="/humans/new"><li>Sign Up (NEW user)</li></a>
 	<% end %>
 		</ul>
 </div>
@@ -515,8 +515,8 @@ end
 		color: #7B0515;
 		cursor: pointer;
 	}
-	.navigation button {
-		margin: -9px -15px;
+	.navigation .logout {
+		margin: -9px 0px;
 		font-size: 0.8em;
 	}
 
@@ -574,15 +574,5 @@ end
     font-size: 1.3em;
     color: #683C0B;
     margin: 20px 0px;
-  }
-
-  .explanation button {
-    margin: 50px 10px;
-    font-size: 1.3em;
-    float: right;
-    background-color: #C38E4A;
-  }
-  .explanation button:hover {
-    background-color: #683C0B;
   }
 </style>
